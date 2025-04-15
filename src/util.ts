@@ -11,23 +11,22 @@ import { publicClient } from "./config.js";
 const platform = os.platform();
 export function buildTxUrl(txHash: Hex | undefined): string | undefined {
   if (!txHash) {
-      return undefined;
+    return undefined;
   }
   const txUrl = `https://bscscan.com/tx/${txHash}`;
   return txUrl
 }
 export async function checkTransactionHash(txHash: Hex): Promise<string> {
-  
+
   const txReceipt = await publicClient.waitForTransactionReceipt({
-      hash: txHash,
-      retryCount: 300,
-      retryDelay: 100,
+    hash: txHash,
+    retryCount: 300,
+    retryDelay: 100,
   });
   const txUrl = `https://bscscan.com/tx/${txHash}`;
   if (txReceipt.status !== "success") {
-    // 请在bscscan上查看hash结果
     throw new Error(`Please check the transaction results on bscscan, ${txUrl}`);
-  } 
+  }
   return txUrl;
 }
 
@@ -47,20 +46,33 @@ export interface InputResult {
   agreed: boolean;
 }
 
-export async function getPassword(isRetry?: boolean): Promise<InputResult> {
+let passwordLock = false
+
+export async function getPassword(isRetry?: boolean, num = 0): Promise<InputResult> {
+  if (passwordLock) {
+    throw new Error("Password lock is enabled. Try again in 24 hours");
+  }
+  if (num > 10) {
+    passwordLock = true;
+
+    setTimeout(() => {
+      passwordLock = false;
+    }, 1000 * 60 * 60 * 24);
+    throw new Error("You have entered the wrong password too many times.");
+  }
 
   const passwordResp = await showInputBoxWithTerms(isRetry);
   if (!passwordResp.value) {
-      throw new Error("You did not enter a password.");
+    throw new Error("You did not enter a password.");
   }
   if (passwordResp.value.length < 8 || passwordResp.value.length > 128) {
-      throw new Error("The password must be between 8 and 128 characters.");
+    throw new Error("The password must be between 8 and 128 characters.");
   }
   const password = passwordResp.value;
 
   const BSC_WALLET_PRIVATE_KEY = process.env.BSC_WALLET_PRIVATE_KEY as Hex
   if (!BSC_WALLET_PRIVATE_KEY) {
-      throw new Error("BSC_WALLET_PRIVATE_KEY is not defined");
+    throw new Error("BSC_WALLET_PRIVATE_KEY is not defined");
   }
   try {
 
@@ -70,15 +82,23 @@ export async function getPassword(isRetry?: boolean): Promise<InputResult> {
     );
     const address = process.env.BSC_WALLET_ADDRESS
     if (!address) {
-        throw new Error("BSC_WALLET_ADDRESS is not defined");
+      throw new Error("BSC_WALLET_ADDRESS is not defined");
     }
-    
+
     if (account.address != address) {
-      return await getPassword(true);
+      return await getPassword(true, ++num);
     }
 
   } catch (error) {
-    return await getPassword(true);
+    if (error instanceof Error) {
+      if (error.message === "Password lock is enabled. Try again in 24 hours") {
+        throw error;
+      }
+      if (error.message === "You have entered the wrong password too many times.") {
+        throw error;
+      }
+    }
+    return await getPassword(true, ++num);
   }
   return passwordResp;
 }
@@ -145,8 +165,8 @@ export function showInputBoxWithTerms(isRetry?: boolean): Promise<InputResult> {
           }
 
           if (stdout.trim() === "canceled") {
-              reject(new Error("Please enter the password before using ❕"));
-              return;
+            reject(new Error("Please enter the password before using ❕"));
+            return;
           }
           const [password, agree] = stdout.trim().split("============");
           resolve({
@@ -246,8 +266,8 @@ export function showInputBoxWithTerms(isRetry?: boolean): Promise<InputResult> {
             return;
           }
           if (!stdout) {
-              reject(new Error("Please enter the password before using ❕"));
-              return;
+            reject(new Error("Please enter the password before using ❕"));
+            return;
           }
           const stdoutJSON = JSON.parse(stdout);
           resolve({
@@ -256,7 +276,7 @@ export function showInputBoxWithTerms(isRetry?: boolean): Promise<InputResult> {
           });
         });
         break;
-      
+
       default:
         reject(new Error(`Unsupported platform and command-line input is not available: ${platform}`));
     }
