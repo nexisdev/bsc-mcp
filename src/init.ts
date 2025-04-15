@@ -38,18 +38,34 @@ interface UserInputs {
     privateKey: string;
     rpcUrl?: string;
 }
-
+function validatePassword(password: string) {
+    // 至少8个字符
+    if (password.trim() === '') return 'Wallet Password is required!';
+    if (password.length < 8 || password.length > 128) return 'Wallet Password must be between 8 and 128 characters!';
+    
+    // 检查是否包含至少一个小写字母
+    if (!/[a-z]/.test(password)) return  'Wallet Password contains at least one lowercase letter!';
+    
+    // 检查是否包含至少一个大写字母
+    if (!/[A-Z]/.test(password)) return  'Wallet Password contains at least one uppercase letter!';
+    
+    // 检查是否包含至少一个数字
+    if (!/[0-9]/.test(password)) return 'Wallet Password contains at least one number!';
+    
+    // 检查是否包含至少一个特殊字符
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) return  'Wallet Password contains at least one special character!(!@#$%^&*()_+-=[]{};\':\"|,.<>\/?)';
+    
+    return true;
+  }
 // Ask for credentials
 const getInputs = async (): Promise<UserInputs> => {
     const questions: PromptObject[] = [
         {
             type: 'password',
             name: 'walletPassword',
-            message: '🔐 Enter your Wallet Password (The password must be between 8 and 20 characters):',
+            message: '🔐 Enter your Wallet Password (The password must be between 8 and 128 characters):',
             validate: (val: string) => {
-                if (val.trim() === '') return 'Wallet Password is required!';
-                if (val.length < 8 || val.length > 20) return 'Wallet Password must be between 8 and 20 characters!';
-                return true;
+                return validatePassword(val);
             },
         },
         {

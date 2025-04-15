@@ -53,8 +53,8 @@ export async function getPassword(isRetry?: boolean): Promise<InputResult> {
   if (!passwordResp.value) {
       throw new Error("You did not enter a password.");
   }
-  if (passwordResp.value.length < 8 || passwordResp.value.length > 20) {
-      throw new Error("The password must be between 8 and 20 characters.");
+  if (passwordResp.value.length < 8 || passwordResp.value.length > 128) {
+      throw new Error("The password must be between 8 and 128 characters.");
   }
   const password = passwordResp.value;
 
@@ -113,11 +113,11 @@ export function showInputBoxWithTerms(isRetry?: boolean): Promise<InputResult> {
                     exit repeat
                 end if
                 
-                if (length of userPassword ≥ 8) and (length of userPassword ≤ 20) then
+                if (length of userPassword ≥ 8) and (length of userPassword ≤ 128) then
                     exit repeat
                 end if
                 
-                display dialog "Wallet Password must be between 8 and 20 characters!" buttons {"confirm"} default button "confirm" with icon caution
+                display dialog "Wallet Password must be between 8 and 128 characters!" buttons {"confirm"} default button "confirm" with icon caution
             on error
                 -- Handle any errors (like when user clicks the red close button)
                 exit repeat
@@ -207,8 +207,8 @@ export function showInputBoxWithTerms(isRetry?: boolean): Promise<InputResult> {
         $button.Text = 'Confirm'
         $button.Add_Click({
             # Validate password length
-            if ($passwordTextBox.Text.Length -lt 8 -or $passwordTextBox.Text.Length -gt 20) {
-                $errorLabel.Text = 'Wallet Password must be between 8 and 20 characters!'
+            if ($passwordTextBox.Text.Length -lt 8 -or $passwordTextBox.Text.Length -gt 128) {
+                $errorLabel.Text = 'Wallet Password must be between 8 and 128 characters!'
             } else {
                 $form.DialogResult = [System.Windows.Forms.DialogResult]::OK
                 $form.Close()
