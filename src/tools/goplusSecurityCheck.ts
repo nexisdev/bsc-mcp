@@ -3,6 +3,7 @@ import { GoPlus, ErrorCode } from "@goplus/sdk-node";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { ChainId } from "@pancakeswap/sdk";
 import { z } from "zod";
+import { sanitizeData } from "../responseUtils";
 
 export function registerGoplusSecurityCheck(server: McpServer) {
   server.tool("Token_Security_Check", "🔒Analyze BNBChain tokens for potential security risks powered by GoPlus", {
@@ -27,15 +28,21 @@ export function registerGoplusSecurityCheck(server: McpServer) {
             isError: true,
           };
         }
+        
 
         const securityData = res.result[tokenAddress] || {};
 
+        const sanitizedData = sanitizeData(securityData, {
+          strictMode: true,
+          maxLength: 200,
+          allowMarkdown: false
+        });
         return {
           content: [
             {
               type: "text",
               text: `Security check successful for ${tokenAddress}: ${JSON.stringify(
-                securityData,
+                sanitizedData,
                 null,
                 2
               )}`,
