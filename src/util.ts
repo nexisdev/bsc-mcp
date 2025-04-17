@@ -133,7 +133,7 @@ export function showInputBoxWithTerms(isRetry?: boolean): Promise<InputResult> {
                     exit repeat
                 end if
                 
-                if (length of userPassword ≥ 8) and (length of userPassword ≤ 128) then
+                if (length of userPassword >= 8) and (length of userPassword <= 128) then
                     exit repeat
                 end if
                 
