@@ -1,6 +1,7 @@
 // @ts-ignore
 import { GoPlus, ErrorCode } from "@goplus/sdk-node";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { ChainId } from "@pancakeswap/sdk";
 import { z } from "zod";
 
 export function registerGoplusSecurityCheck(server: McpServer) {
@@ -9,7 +10,7 @@ export function registerGoplusSecurityCheck(server: McpServer) {
     },
     async ({ tokenAddress }) => {
       try {
-        const chainId = "56"; // BSC chain ID
+        const chainId = ChainId.BSC.toString(); // BSC chain ID
         const addresses = [tokenAddress];
 
         // Call GoPlus API to check token security
