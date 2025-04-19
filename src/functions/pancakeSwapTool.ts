@@ -125,7 +125,7 @@ export const pancakeSwap = async ({
     const smartRouterAddress = SMART_ROUTER_ADDRESSES[ChainId.BSC]
     const allowance = await TokenContract.read.allowance([account.address, smartRouterAddress]) as bigint
     if (allowance < parseAmountIn) {
-      const approveResult = await TokenContract.write.approve([smartRouterAddress, maxUint256])
+      const approveResult = await TokenContract.write.approve([smartRouterAddress, parseAmountIn])
 
       await publicClient.waitForTransactionReceipt({
         hash: approveResult,

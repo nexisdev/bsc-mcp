@@ -7,6 +7,7 @@ import {
 } from "viem";
 import { getAccount, publicClient, walletClient } from "../config.js";
 import { AddressConfig } from "../addressConfig.js";
+import { buildTxUrl, checkTransactionHash } from "../util.js";
 
 
 export function registerBuyMemeToken(server: McpServer) {
@@ -18,6 +19,7 @@ export function registerBuyMemeToken(server: McpServer) {
         },
         async ({ token, tokenValue, bnbValue }) => {
 
+            let txHash = undefined;
             try {
                 
 
@@ -104,7 +106,7 @@ export function registerBuyMemeToken(server: McpServer) {
                     inputAmount =  (BigInt(amountMsgValue) * BigInt(100 + 5)) / 100n
                 }
 
-                const hash = await walletClient(account).writeContract({
+                txHash = await walletClient(account).writeContract({
                     account,
                     address: AddressConfig.FourMemeBuyTokenAMAPContract,
                     abi: [{
@@ -135,26 +137,29 @@ export function registerBuyMemeToken(server: McpServer) {
                     value: BigInt(inputAmount),
                 });
 
+                const txUrl = await checkTransactionHash(txHash)
                 return {
                     content: [
                         {
                             type: "text",
-                            text: `buy meme token successfully. https://bscscan.com/tx/${hash}`,
-                            url: `https://bscscan.com/tx/${hash}`,
+                            text: `buy meme token successfully. ${txUrl}`,
+                            url: txUrl,
                         },
                     ],
                 };
             } catch (error) {
                 const errorMessage =
-                    error instanceof Error ? error.message : String(error);
+                  error instanceof Error ? error.message : String(error);
+                const txUrl = buildTxUrl(txHash);
                 return {
-                    content: [
-                        {
-                            type: "text",
-                            text: `Transaction failed: ${errorMessage}`,
-                        },
-                    ],
-                    isError: true,
+                  content: [
+                    {
+                      type: "text",
+                      text: `transaction failed: ${errorMessage}`,
+                      url: txUrl,
+                    },
+                  ],
+                  isError: true,
                 };
             }
         }
