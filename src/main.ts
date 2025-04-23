@@ -8,7 +8,6 @@ import { registerTransferNativeToken } from "./tools/transferNativeToken.js";
 import { registerTransferBEP20Token } from "./tools/transferBEP20Token.js";
 import { registerPancakeSwap } from "./tools/pancakeSwap.js";
 import { registerGetWalletInfo } from "./tools/getWalletInfo.js";
-import { registerCreateMemeToken } from "./tools/createFourMeme.js";
 import { registerBuyMemeToken } from "./tools/buyMemeToken.js";
 import { registerSellMemeToken } from "./tools/sellMemeToken.js";
 import { registerPancakeAddLiquidity } from "./tools/pancakeAddLiquidity.js";
@@ -29,7 +28,6 @@ export async function main() {
     registerTransferBEP20Token(server);
     registerPancakeSwap(server);
     registerGetWalletInfo(server);
-    registerCreateMemeToken(server);
     registerBuyMemeToken(server);
     registerSellMemeToken(server);
     registerPancakeAddLiquidity(server);
