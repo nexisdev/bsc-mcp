@@ -4,19 +4,52 @@
 
 ## 📦 BNBChain MCP – Binance Smart Chain Tool Server (MCP + CLI Ready)
 
-> A plug-and-play MCP tool server to **send BNB**, **transfer BEP-20 tokens**, **deploy tokens**, and **interact with smart contracts** on the **Binance Smart Chain (BSC)** — built for **Claude Desktop**, **AI agents**, and **developers.**
+> A comprehensive blockchain tool server for BNB, BEP-20 tokens, smart contract deployment and interaction built on BNB Smart Chain (BSC) and compatible with other EVM networks.
 
 ---
 
-### ⚙️ Core Capabilities
+## Technology Stack
 
-- 🔐 Secure token & native transfers via CLI or MCP
-- 🧱 Interact with smart contracts (ABI/function-based)
-- 🔄 PancakeSwap integration for swaps & liquidity
-- ⚙️ Create meme tokens & deploy BEP-20 smart contracts
-- 🧠 Native Claude Desktop integration via MCP
-- 🔧 CLI-ready, MCP-compliant, developer-friendly
-- 🔑 Password-protected private keys
+- **Blockchain**: BNB Smart Chain (BSC)  
+- **Web3 Libraries**: Viem 2.23.11, PancakeSwap SDK 5.8.8  
+- **CLI/Backend**: TypeScript, Node.js (ESM)  
+- **Protocol**: Model Context Protocol (MCP) SDK 1.4.0  
+- **Security**: AES encryption with bcrypt for private key protection
+- **Token Security**: GoPlus SDK for security checks
+- **Data Provider**: Moralis SDK 2.27.2 for blockchain data
+
+---
+
+## Supported Networks
+
+- **BNB Smart Chain Mainnet** (Chain ID: 56)  
+  - RPC: https://bsc-dataseed.binance.org (default)
+  - Custom RPC supported via environment configuration
+
+---
+
+## Contract Addresses
+
+| Contract Type | Address | Description |
+|--------------|---------|-------------|
+| Four.Meme Try Buy | 0xF251F83e40a78868FcfA3FA4599Dad6494E46034 | Four.Meme token purchase contract |
+| Four.Meme Buy/Sell AMAP | 0x5c952063c7fc8610FFDB798152D69F0B9550762b | Four.Meme auto-market-adjusted pricing |
+| Four.Meme Create Token | 0x5c952063c7fc8610FFDB798152D69F0B9550762b | Four.Meme token factory |
+| PancakeSwap Router V2 | Integrated via SDK | DEX routing and swaps |
+| PancakeSwap V3 Pools | Accessed via SDK | Liquidity pools management |
+
+---
+
+## Features
+
+- **Low-cost BNB & BEP-20 transfers** - Optimized for BSC's low gas fees
+- **PancakeSwap V2/V3 integration** - Automated swaps, liquidity management, and position tracking
+- **Four.Meme platform support** - Create, buy, and sell meme tokens directly
+- **Security-first architecture** - AES-256 encrypted private keys with bcrypt password protection
+- **Token security analysis** - Built-in GoPlus security checks for token verification
+- **Gas-efficient operations** - Smart routing for optimal gas usage on BSC
+- **AI-ready MCP protocol** - Seamless integration with Claude Desktop and AI agents
+- **Real-time wallet monitoring** - Track balances and positions across multiple tokens
 
 ---
 
